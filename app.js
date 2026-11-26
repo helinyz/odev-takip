@@ -148,20 +148,60 @@ function odevElemaniOlustur(odev) {
   return li;
 }
 
-// Ödev listesini ekrana çizer
+// Ekrandaki filtre ve sıralama seçeneklerini okur
+function secenekleriOku() {
+  return {
+    ders: document.getElementById("ders-filtresi").value,
+    sira: document.getElementById("siralama").value,
+    sadeceTamamlanmamis: document.getElementById("sadece-tamamlanmamis").checked
+  };
+}
+
+// Ders menüsünü kayıtlı ödevlerdeki derslerle yeniden doldurur
+function dersMenusunuGuncelle() {
+  const menu = document.getElementById("ders-filtresi");
+  const seciliDers = menu.value;
+  const dersler = dersleriGetir(odevler);
+
+  // "Tüm dersler" dışındaki seçenekleri temizle
+  menu.length = 1;
+  dersler.forEach(function (ders) {
+    const secenek = document.createElement("option");
+    secenek.value = ders;
+    secenek.textContent = ders;
+    menu.append(secenek);
+  });
+
+  // Seçili ders hâlâ varsa seçili kalsın, yoksa "Tüm dersler"e dön
+  menu.value = dersler.includes(seciliDers) ? seciliDers : "";
+}
+
+// Listeye bilgi mesajı (boş liste yazısı) ekler
+function bosMesajEkle(liste, metin) {
+  const bos = document.createElement("li");
+  bos.className = "bos-liste";
+  bos.textContent = metin;
+  liste.append(bos);
+}
+
+// Ödev listesini filtre ve sıralamaya göre ekrana çizer
 function listeyiGoster() {
   const liste = document.getElementById("odev-listesi");
   liste.innerHTML = "";
+  dersMenusunuGuncelle();
 
   if (odevler.length === 0) {
-    const bos = document.createElement("li");
-    bos.className = "bos-liste";
-    bos.textContent = "Henüz ödev eklenmedi.";
-    liste.append(bos);
+    bosMesajEkle(liste, "Henüz ödev eklenmedi.");
     return;
   }
 
-  odevler.forEach(function (odev) {
+  const gorunurler = gorunurOdevleriGetir(odevler, secenekleriOku());
+  if (gorunurler.length === 0) {
+    bosMesajEkle(liste, "Bu filtreye uygun ödev yok.");
+    return;
+  }
+
+  gorunurler.forEach(function (odev) {
     liste.append(odevElemaniOlustur(odev));
   });
 }
@@ -208,6 +248,12 @@ function odevEkle(olay) {
 document.addEventListener("DOMContentLoaded", function () {
   odevler = odevleriYukle();
   document.getElementById("odev-formu").addEventListener("submit", odevEkle);
+
+  // Filtre veya sıralama değişince listeyi yeniden çiz
+  document.getElementById("ders-filtresi").addEventListener("change", listeyiGoster);
+  document.getElementById("siralama").addEventListener("change", listeyiGoster);
+  document.getElementById("sadece-tamamlanmamis").addEventListener("change", listeyiGoster);
+
   listeyiGoster();
   console.log("Uygulama hazır");
 });
