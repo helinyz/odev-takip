@@ -36,6 +36,28 @@
     <!-- Ödev listesi -->
     <section class="kart">
       <h2>Ödevlerim</h2>
+
+      <!-- Filtreleme ve sıralama seçenekleri -->
+      <div class="filtreler">
+        <div class="filtre">
+          <label for="ders-filtresi">Ders</label>
+          <select id="ders-filtresi">
+            <option value="">Tüm dersler</option>
+          </select>
+        </div>
+        <div class="filtre">
+          <label for="siralama">Sırala</label>
+          <select id="siralama">
+            <option value="eklenme">Eklenme sırası</option>
+            <option value="tarih">Teslim tarihi (en yakın önce)</option>
+          </select>
+        </div>
+        <label class="filtre-kutu">
+          <input type="checkbox" id="sadece-tamamlanmamis">
+          Sadece tamamlanmamışlar
+        </label>
+      </div>
+
       <ul id="odev-listesi"></ul>
     </section>
   </main>
