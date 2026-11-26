@@ -51,9 +51,9 @@ Sunucu, kurulum veya paket gerekmez. Uygulama yalnızca HTML, CSS ve JavaScript 
 
 **Hazırlık:** Önce farklı derslere ve farklı teslim tarihlerine sahip birkaç örnek ödev ekleyin. Örneğin:
 
-- "Ödev 1" – Matematik – 10.12.2026
-- "Ödev 2" – Fizik – 01.12.2026
-- "Ödev 3" – Matematik – 30.11.2026
+- "Ödev 1" – Matematik – 15.01.2027
+- "Ödev 2" – Fizik – 05.01.2027
+- "Ödev 3" – Matematik – 25.12.2026
 
 | Adım | Ne yapılır | Beklenen sonuç |
 |------|-----------|----------------|
@@ -67,6 +67,8 @@ Sunucu, kurulum veya paket gerekmez. Uygulama yalnızca HTML, CSS ve JavaScript 
 Filtreleme ve sıralama yalnızca görünümü değiştirir; kayıtlı veriler silinmez ve sıraları bozulmaz.
 
 ## Geliştirme süreci
+
+Hocanın istediği iki geliştirme görevi olarak panodan #2 (Özellik 1: Ödev ekleme, silme, tamamlama) ve #3 (Özellik 2: Filtreleme ve sıralama) seçilmiştir. Proje iskeleti (#1), README (#4) ve GitHub Pages yayını (#5) da panoda takip edilip tamamlanmıştır.
 
 - Planlama, GitHub Projects'teki [proje panosunda](https://github.com/users/helinyz/projects/1) **Yapılacak / Devam Ediyor / Tamamlandı** sütunlarıyla yapıldı.
 - Her görev, kullanıcı hikayesi ve kabul kriterleri içeren bir issue olarak tanımlandı.
