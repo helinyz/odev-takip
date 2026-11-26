@@ -24,6 +24,60 @@ function odevleriKaydet() {
   localStorage.setItem(DEPOLAMA_ANAHTARI, JSON.stringify(odevler));
 }
 
+// --- Filtreleme ve sıralama ---
+// Bu fonksiyonlar diziyi değiştirmez, her zaman yeni bir dizi döndürür.
+
+// Ödevlerdeki farklı ders adlarını alfabetik sırayla döndürür
+function dersleriGetir(liste) {
+  const dersler = [];
+  liste.forEach(function (odev) {
+    if (!dersler.includes(odev.ders)) {
+      dersler.push(odev.ders);
+    }
+  });
+  return dersler.sort(function (a, b) {
+    return a.localeCompare(b, "tr");
+  });
+}
+
+// Sadece verilen dersin ödevlerini döndürür; ders boşsa hepsini döndürür
+function dereGoreFiltrele(liste, ders) {
+  if (ders === "") {
+    return liste.slice();
+  }
+  return liste.filter(function (odev) {
+    return odev.ders === ders;
+  });
+}
+
+// "Sadece tamamlanmamışlar" seçiliyse tamamlanan ödevleri çıkarır
+function tamamlanmamislariFiltrele(liste, sadeceTamamlanmamis) {
+  if (!sadeceTamamlanmamis) {
+    return liste.slice();
+  }
+  return liste.filter(function (odev) {
+    return !odev.tamamlandi;
+  });
+}
+
+// Ödevleri teslim tarihine göre sıralar (en yakın tarih önce).
+// Tarihler "YYYY-AA-GG" biçiminde olduğu için metin olarak karşılaştırılabilir.
+function tariheGoreSirala(liste) {
+  return liste.slice().sort(function (a, b) {
+    return a.tarih.localeCompare(b.tarih);
+  });
+}
+
+// Tüm filtreleri ve sıralamayı sırayla uygular
+function gorunurOdevleriGetir(liste, secenekler) {
+  let sonuc = dereGoreFiltrele(liste, secenekler.ders);
+  sonuc = tamamlanmamislariFiltrele(sonuc, secenekler.sadeceTamamlanmamis);
+  if (secenekler.sira === "tarih") {
+    sonuc = tariheGoreSirala(sonuc);
+  }
+  return sonuc;
+}
+
 // "2026-12-05" biçimindeki tarihi "05.12.2026" olarak gösterir
 function tarihiBicimlendir(tarih) {
   const [yil, ay, gun] = tarih.split("-");
@@ -94,20 +148,60 @@ function odevElemaniOlustur(odev) {
   return li;
 }
 
-// Ödev listesini ekrana çizer
+// Ekrandaki filtre ve sıralama seçeneklerini okur
+function secenekleriOku() {
+  return {
+    ders: document.getElementById("ders-filtresi").value,
+    sira: document.getElementById("siralama").value,
+    sadeceTamamlanmamis: document.getElementById("sadece-tamamlanmamis").checked
+  };
+}
+
+// Ders menüsünü kayıtlı ödevlerdeki derslerle yeniden doldurur
+function dersMenusunuGuncelle() {
+  const menu = document.getElementById("ders-filtresi");
+  const seciliDers = menu.value;
+  const dersler = dersleriGetir(odevler);
+
+  // "Tüm dersler" dışındaki seçenekleri temizle
+  menu.length = 1;
+  dersler.forEach(function (ders) {
+    const secenek = document.createElement("option");
+    secenek.value = ders;
+    secenek.textContent = ders;
+    menu.append(secenek);
+  });
+
+  // Seçili ders hâlâ varsa seçili kalsın, yoksa "Tüm dersler"e dön
+  menu.value = dersler.includes(seciliDers) ? seciliDers : "";
+}
+
+// Listeye bilgi mesajı (boş liste yazısı) ekler
+function bosMesajEkle(liste, metin) {
+  const bos = document.createElement("li");
+  bos.className = "bos-liste";
+  bos.textContent = metin;
+  liste.append(bos);
+}
+
+// Ödev listesini filtre ve sıralamaya göre ekrana çizer
 function listeyiGoster() {
   const liste = document.getElementById("odev-listesi");
   liste.innerHTML = "";
+  dersMenusunuGuncelle();
 
   if (odevler.length === 0) {
-    const bos = document.createElement("li");
-    bos.className = "bos-liste";
-    bos.textContent = "Henüz ödev eklenmedi.";
-    liste.append(bos);
+    bosMesajEkle(liste, "Henüz ödev eklenmedi.");
     return;
   }
 
-  odevler.forEach(function (odev) {
+  const gorunurler = gorunurOdevleriGetir(odevler, secenekleriOku());
+  if (gorunurler.length === 0) {
+    bosMesajEkle(liste, "Bu filtreye uygun ödev yok.");
+    return;
+  }
+
+  gorunurler.forEach(function (odev) {
     liste.append(odevElemaniOlustur(odev));
   });
 }
@@ -154,6 +248,12 @@ function odevEkle(olay) {
 document.addEventListener("DOMContentLoaded", function () {
   odevler = odevleriYukle();
   document.getElementById("odev-formu").addEventListener("submit", odevEkle);
+
+  // Filtre veya sıralama değişince listeyi yeniden çiz
+  document.getElementById("ders-filtresi").addEventListener("change", listeyiGoster);
+  document.getElementById("siralama").addEventListener("change", listeyiGoster);
+  document.getElementById("sadece-tamamlanmamis").addEventListener("change", listeyiGoster);
+
   listeyiGoster();
   console.log("Uygulama hazır");
 });
