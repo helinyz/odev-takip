@@ -122,6 +122,29 @@ button:hover {
   color: #777;
 }
 
+.odev input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Tamamlanan ödevin üstü çizili görünür */
+.odev.tamamlandi .odev-adi,
+.odev.tamamlandi .odev-detay {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+.sil-butonu {
+  padding: 4px 12px;
+  font-size: 0.85rem;
+  background-color: #e74c3c;
+}
+
+.sil-butonu:hover {
+  background-color: #c0392b;
+}
+
 .bos-liste {
   color: #999;
   font-style: italic;
