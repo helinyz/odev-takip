@@ -24,6 +24,60 @@ function odevleriKaydet() {
   localStorage.setItem(DEPOLAMA_ANAHTARI, JSON.stringify(odevler));
 }
 
+// --- Filtreleme ve sıralama ---
+// Bu fonksiyonlar diziyi değiştirmez, her zaman yeni bir dizi döndürür.
+
+// Ödevlerdeki farklı ders adlarını alfabetik sırayla döndürür
+function dersleriGetir(liste) {
+  const dersler = [];
+  liste.forEach(function (odev) {
+    if (!dersler.includes(odev.ders)) {
+      dersler.push(odev.ders);
+    }
+  });
+  return dersler.sort(function (a, b) {
+    return a.localeCompare(b, "tr");
+  });
+}
+
+// Sadece verilen dersin ödevlerini döndürür; ders boşsa hepsini döndürür
+function dereGoreFiltrele(liste, ders) {
+  if (ders === "") {
+    return liste.slice();
+  }
+  return liste.filter(function (odev) {
+    return odev.ders === ders;
+  });
+}
+
+// "Sadece tamamlanmamışlar" seçiliyse tamamlanan ödevleri çıkarır
+function tamamlanmamislariFiltrele(liste, sadeceTamamlanmamis) {
+  if (!sadeceTamamlanmamis) {
+    return liste.slice();
+  }
+  return liste.filter(function (odev) {
+    return !odev.tamamlandi;
+  });
+}
+
+// Ödevleri teslim tarihine göre sıralar (en yakın tarih önce).
+// Tarihler "YYYY-AA-GG" biçiminde olduğu için metin olarak karşılaştırılabilir.
+function tariheGoreSirala(liste) {
+  return liste.slice().sort(function (a, b) {
+    return a.tarih.localeCompare(b.tarih);
+  });
+}
+
+// Tüm filtreleri ve sıralamayı sırayla uygular
+function gorunurOdevleriGetir(liste, secenekler) {
+  let sonuc = dereGoreFiltrele(liste, secenekler.ders);
+  sonuc = tamamlanmamislariFiltrele(sonuc, secenekler.sadeceTamamlanmamis);
+  if (secenekler.sira === "tarih") {
+    sonuc = tariheGoreSirala(sonuc);
+  }
+  return sonuc;
+}
+
 // "2026-12-05" biçimindeki tarihi "05.12.2026" olarak gösterir
 function tarihiBicimlendir(tarih) {
   const [yil, ay, gun] = tarih.split("-");
