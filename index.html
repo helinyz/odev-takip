@@ -12,13 +12,28 @@
       <h1>Ödev Takip</h1>
     </header>
 
-    <!-- Ödev ekleme formu (sonraki adımda doldurulacak) -->
+    <!-- Ödev ekleme formu -->
     <section class="kart">
       <h2>Yeni Ödev</h2>
-      <form id="odev-formu"></form>
+      <form id="odev-formu" novalidate>
+        <div class="alan">
+          <label for="odev-adi">Ödev adı</label>
+          <input type="text" id="odev-adi" placeholder="Örn. Proje raporu">
+        </div>
+        <div class="alan">
+          <label for="ders-adi">Ders adı</label>
+          <input type="text" id="ders-adi" placeholder="Örn. Web Programlama">
+        </div>
+        <div class="alan">
+          <label for="teslim-tarihi">Teslim tarihi</label>
+          <input type="date" id="teslim-tarihi">
+        </div>
+        <button type="submit">Ekle</button>
+        <p id="form-mesaji" class="form-mesaji" aria-live="polite"></p>
+      </form>
     </section>
 
-    <!-- Ödev listesi (sonraki adımda doldurulacak) -->
+    <!-- Ödev listesi -->
     <section class="kart">
       <h2>Ödevlerim</h2>
       <ul id="odev-listesi"></ul>
