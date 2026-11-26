@@ -91,3 +91,38 @@ button:hover {
 #odev-listesi {
   list-style: none;
 }
+
+/* Listedeki her bir ödev satırı */
+.odev {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eef1f4;
+}
+
+.odev:last-child {
+  border-bottom: none;
+}
+
+.odev-bilgi {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.odev-adi {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.odev-detay {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.bos-liste {
+  color: #999;
+  font-style: italic;
+}
